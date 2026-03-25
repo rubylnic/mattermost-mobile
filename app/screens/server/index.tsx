@@ -100,6 +100,7 @@ const Server = ({
     const {formatMessage} = intl;
     const disableServerUrl = Boolean(managedConfig?.allowOtherServers === 'false' && managedConfig?.serverUrl);
     const additionalServer = launchType === Launch.AddServerFromDeepLink || launchType === Launch.AddServer;
+    const shouldAutoConnect = !additionalServer && (managedConfig?.allowOtherServers === 'false' || LocalConfig.AutoSelectServerUrl);
 
     const dismiss = () => {
         NetworkManager.invalidateClient(url);
@@ -224,7 +225,18 @@ const Server = ({
             passProps.launchType = Launch.Normal;
         }
 
-        goToScreen(screen, '', passProps, loginAnimationOptions());
+        goToScreen(
+            screen,
+            '',
+            {...passProps, hideTopBar: true},
+            {
+                ...loginAnimationOptions(),
+                topBar: {
+                    visible: false,
+                    height: 0,
+                },
+            },
+        );
         setConnecting(false);
         setButtonDisabled(false);
         setUrl(serverUrl);
@@ -404,6 +416,22 @@ const Server = ({
 
         displayLogin(headRequest.url, data.config!, data.license!);
     };
+
+    if (shouldAutoConnect) {
+        return (
+            <View
+                style={styles.flex}
+                testID='server.screen'
+                nativeID={SecurityManager.getShieldScreenId(componentId, false, true)}
+            >
+                <Background theme={theme}/>
+                <AnimatedSafeArea
+                    key={'server_content'}
+                    style={[styles.flex, animatedStyles]}
+                />
+            </View>
+        );
+    }
 
     return (
         <View

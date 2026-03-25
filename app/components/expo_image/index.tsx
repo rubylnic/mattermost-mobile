@@ -37,6 +37,16 @@ function shouldAttachServerAuthHeaders(uri: string | undefined, serverUrl: strin
     }
 }
 
+function isUriImageSource(source: unknown): source is {uri: string; headers?: Record<string, string>} {
+    return Boolean(
+        source &&
+        typeof source === 'object' &&
+        !Array.isArray(source) &&
+        'uri' in source &&
+        typeof (source as {uri?: unknown}).uri === 'string',
+    );
+}
+
 const ExpoImage = forwardRef<Image, ExpoImageProps>(({id, ...props}, ref) => {
     const serverUrl = useServerUrl();
     const requestHeaders = useMemo(() => {
@@ -55,17 +65,18 @@ const ExpoImage = forwardRef<Image, ExpoImageProps>(({id, ...props}, ref) => {
      */
     const cachePath = useMemo(() => urlSafeBase64Encode(serverUrl), [serverUrl]);
     const source: ImageSource = useMemo(() => {
-        if (typeof props.source === 'number') {
-            return props.source;
+        const incoming = props.source;
+        if (!isUriImageSource(incoming)) {
+            return incoming as ImageSource;
         }
 
-        const sourceHeaders = shouldAttachServerAuthHeaders(props.source?.uri, serverUrl) && requestHeaders ? {...requestHeaders, ...props.source?.headers} : props.source?.headers;
+        const sourceHeaders = shouldAttachServerAuthHeaders(incoming.uri, serverUrl) && requestHeaders ? {...requestHeaders, ...incoming.headers} : incoming.headers;
         delete sourceHeaders?.Accept;
 
         // Only add cacheKey and cachePath if id is provided (i.e., not memory-only caching)
         if (id) {
             return {
-                ...props.source,
+                ...incoming,
                 headers: sourceHeaders,
                 cacheKey: id,
                 cachePath,
@@ -73,24 +84,25 @@ const ExpoImage = forwardRef<Image, ExpoImageProps>(({id, ...props}, ref) => {
         }
 
         return {
-            ...props.source,
+            ...incoming,
             headers: sourceHeaders,
         };
     }, [id, props.source, cachePath, requestHeaders, serverUrl]);
 
     // Process placeholder to add cachePath and cacheKey if it has a uri
     const placeholder: ImageSource | undefined = useMemo(() => {
-        if (!props.placeholder || typeof props.placeholder === 'number' || typeof props.placeholder === 'string') {
-            return props.placeholder;
+        const incoming = props.placeholder as ImageSource | undefined;
+        if (!isUriImageSource(incoming)) {
+            return incoming;
         }
 
-        const placeholderHeaders = shouldAttachServerAuthHeaders(props.placeholder?.uri, serverUrl) && requestHeaders ? {...requestHeaders, ...props.placeholder?.headers} : props.placeholder?.headers;
+        const placeholderHeaders = shouldAttachServerAuthHeaders(incoming.uri, serverUrl) && requestHeaders ? {...requestHeaders, ...incoming.headers} : incoming.headers;
         delete placeholderHeaders?.Accept;
 
         // If placeholder has a uri and id is provided, add cachePath and cacheKey
-        if (props.placeholder.uri && id) {
+        if (id) {
             return {
-                ...props.placeholder,
+                ...incoming,
                 headers: placeholderHeaders,
                 cacheKey: `${id}-thumb`,
                 cachePath,
@@ -98,7 +110,7 @@ const ExpoImage = forwardRef<Image, ExpoImageProps>(({id, ...props}, ref) => {
         }
 
         return {
-            ...props.placeholder,
+            ...incoming,
             headers: placeholderHeaders,
         };
     }, [props.placeholder, id, cachePath, requestHeaders, serverUrl]);
@@ -118,38 +130,40 @@ const ExpoImageBackground = ({id, ...props}: ExpoImageBackgroundProps) => {
     const serverUrl = useServerUrl();
     const cachePath = useMemo(() => urlSafeBase64Encode(serverUrl), [serverUrl]);
     const source: ImageSource = useMemo(() => {
-        if (typeof props.source === 'number') {
-            return props.source;
+        const incoming = props.source;
+        if (!isUriImageSource(incoming)) {
+            return incoming as ImageSource;
         }
 
         // Only add cacheKey and cachePath if id is provided (i.e., not memory-only caching)
         if (id) {
             return {
-                ...props.source,
+                ...incoming,
                 cacheKey: id,
                 cachePath,
             };
         }
 
-        return props.source;
+        return incoming;
     }, [id, props.source, cachePath]);
 
     // Process placeholder to add cachePath and cacheKey if it has a uri
     const placeholder: ImageSource | undefined = useMemo(() => {
-        if (!props.placeholder || typeof props.placeholder === 'number' || typeof props.placeholder === 'string') {
-            return props.placeholder;
+        const incoming = props.placeholder as ImageSource | undefined;
+        if (!isUriImageSource(incoming)) {
+            return incoming;
         }
 
         // If placeholder has a uri and id is provided, add cachePath and cacheKey
-        if (props.placeholder.uri && id) {
+        if (id) {
             return {
-                ...props.placeholder,
+                ...incoming,
                 cacheKey: `${id}-thumb`,
                 cachePath,
             };
         }
 
-        return props.placeholder;
+        return incoming;
     }, [props.placeholder, id, cachePath]);
 
     return (

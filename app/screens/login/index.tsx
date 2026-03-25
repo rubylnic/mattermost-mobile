@@ -38,6 +38,7 @@ export interface LoginOptionsProps extends LaunchProps {
     componentId: AvailableScreens;
     config: ClientConfig;
     hasLoginForm: boolean;
+    hideTopBar?: boolean;
     license: ClientLicense;
     serverDisplayName: string;
     serverUrl: string;
@@ -96,7 +97,7 @@ const AnimatedSafeArea = Animated.createAnimatedComponent(SafeAreaView);
 const LoginOptions = ({
     closeButtonId, componentId, config, extra,
     hasLoginForm, launchType, launchError, license,
-    serverDisplayName, serverUrl, ssoOptions, theme,
+    hideTopBar, serverDisplayName, serverUrl, ssoOptions, theme,
 }: LoginOptionsProps) => {
     const styles = getStyles(theme);
     const keyboardAwareRef = useRef<KeyboardAwareScrollView>(null);
@@ -228,7 +229,13 @@ const LoginOptions = ({
             nativeID={SecurityManager.getShieldScreenId(componentId, false, true)}
         >
             <Background theme={theme}/>
-            <AnimatedSafeArea style={[styles.container, animatedStyles]}>
+            <AnimatedSafeArea
+                style={[
+                    styles.container,
+                    hideTopBar && Platform.OS === 'android' ? {marginTop: 0} : undefined,
+                    animatedStyles,
+                ]}
+            >
                 <KeyboardAwareScrollView
                     bounces={true}
                     contentContainerStyle={[styles.innerContainer, additionalContainerStyle]}
