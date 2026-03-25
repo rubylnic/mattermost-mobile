@@ -14,17 +14,19 @@ import {getTranslations} from '@i18n';
 
 import type Database from '@nozbe/watermelondb/Database';
 
+const IntlProviderComponent = IntlProvider as unknown as React.ComponentType<React.ComponentProps<typeof IntlProvider>>;
+
 export function renderWithIntl(ui: ReactElement, {locale = 'en', ...renderOptions} = {}) {
     function Wrapper({children}: {children: ReactElement}) {
         return (
-            <IntlProvider
+            <IntlProviderComponent
                 locale={locale}
                 messages={getTranslations(locale)}
             >
                 <SafeAreaProvider>
                     {children}
                 </SafeAreaProvider>
-            </IntlProvider>
+            </IntlProviderComponent>
         );
     }
 
@@ -34,7 +36,7 @@ export function renderWithIntl(ui: ReactElement, {locale = 'en', ...renderOption
 export function renderWithIntlAndTheme(ui: ReactElement, {locale = 'en', ...renderOptions} = {}) {
     function Wrapper({children}: {children: ReactElement}) {
         return (
-            <IntlProvider
+            <IntlProviderComponent
                 locale={locale}
                 messages={getTranslations(locale)}
             >
@@ -43,7 +45,7 @@ export function renderWithIntlAndTheme(ui: ReactElement, {locale = 'en', ...rend
                         {children}
                     </SafeAreaProvider>
                 </ThemeContext.Provider>
-            </IntlProvider>
+            </IntlProviderComponent>
         );
     }
 
@@ -58,7 +60,7 @@ export function renderWithEverything(ui: ReactElement, {locale = 'en', database,
 
         const wrapper = (
             <DatabaseProvider database={database}>
-                <IntlProvider
+                <IntlProviderComponent
                     locale={locale}
                     messages={getTranslations(locale)}
                 >
@@ -69,7 +71,7 @@ export function renderWithEverything(ui: ReactElement, {locale = 'en', database,
                             </ExtraKeyboardProvider>
                         </SafeAreaProvider>
                     </ThemeContext.Provider>
-                </IntlProvider>
+                </IntlProviderComponent>
             </DatabaseProvider>
         );
 

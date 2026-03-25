@@ -219,6 +219,8 @@
     "updatesnapshot": "NODE_OPTIONS=--max_old_space_size=12000 jest --updateSnapshot"
   },
   "overrides": {
+    "@types/react": "18.3.12",
+    "@types/commonmark": "0.27.9",
     "promise": "^8.3.0",
     "react-test-renderer": "18.3.1",
     "@babel/runtime": "7.27.0",
@@ -246,6 +248,12 @@
     "refractor": {
       "prismjs": "1.30.0"
     }
+  },
+  "resolutions": {
+    "@types/react": "18.3.12",
+    "@types/commonmark": "0.27.9",
+    "@types/commonmark-react-renderer/@types/react": "18.3.12",
+    "@types/commonmark-react-renderer/@types/commonmark": "0.27.9"
   },
   "expo": {
     "autolinking": {

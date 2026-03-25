@@ -19,6 +19,7 @@ import ServersScreen from './screens/servers';
 import ShareScreen from './screens/share';
 
 const Stack = createStackNavigator();
+const IntlProviderComponent = IntlProvider as unknown as React.ComponentType<React.ComponentProps<typeof IntlProvider>>;
 
 const closeExtension = (data: ShareExtensionDataToSend | null) => {
     MattermostShare.close(data);
@@ -101,7 +102,7 @@ const ShareExtension = () => {
     }
 
     return (
-        <IntlProvider
+        <IntlProviderComponent
             locale={DEFAULT_LOCALE}
             messages={getTranslations(DEFAULT_LOCALE)}
         >
@@ -132,7 +133,7 @@ const ShareExtension = () => {
                     </Stack.Screen>
                 </Stack.Navigator>
             </NavigationContainer>
-        </IntlProvider>
+        </IntlProviderComponent>
     );
 };
 

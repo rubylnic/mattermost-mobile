@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import {useManagedConfig} from '@mattermost/react-native-emm';
 import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import React, {useCallback, useEffect} from 'react';
 import {useIntl} from 'react-intl';
@@ -27,7 +26,6 @@ import {addSentryContext} from '@utils/sentry';
 
 import AdditionalTabletView from './additional_tablet_view';
 import CategoriesList from './categories_list';
-import Servers from './servers';
 
 import type {LaunchType} from '@typings/launch';
 
@@ -70,7 +68,6 @@ let hasRendered = false;
 
 const ChannelListScreen = (props: ChannelProps) => {
     const theme = useTheme();
-    const managedConfig = useManagedConfig<ManagedConfig>();
     const intl = useIntl();
 
     const isTablet = useIsTablet();
@@ -80,7 +77,7 @@ const ChannelListScreen = (props: ChannelProps) => {
     const insets = useSafeAreaInsets();
     const serverUrl = useServerUrl();
     const params = route.params as {direction: string};
-    const canAddOtherServers = managedConfig?.allowOtherServers !== 'false';
+    const showServersSwitcher = false;
 
     const handleBackPress = useCallback(() => {
         const isHomeScreen = NavigationStore.getVisibleScreen() === Screens.HOME;
@@ -192,16 +189,15 @@ const ChannelListScreen = (props: ChannelProps) => {
                     <AnnouncementBanner/>
                 }
                 <View style={styles.content}>
-                    {canAddOtherServers && <Servers/>}
                     <Animated.View
                         style={[styles.content, animated]}
                     >
                         <TeamSidebar
-                            iconPad={canAddOtherServers}
+                            iconPad={showServersSwitcher}
                             hasMoreThanOneTeam={props.hasMoreThanOneTeam}
                         />
                         <CategoriesList
-                            iconPad={canAddOtherServers && !props.hasMoreThanOneTeam}
+                            iconPad={showServersSwitcher && !props.hasMoreThanOneTeam}
                             isCRTEnabled={props.isCRTEnabled}
                             moreThanOneTeam={props.hasMoreThanOneTeam}
                             hasChannels={props.hasChannels}

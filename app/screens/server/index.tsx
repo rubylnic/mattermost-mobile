@@ -14,6 +14,7 @@ import {doPing} from '@actions/remote/general';
 import {fetchConfigAndLicense} from '@actions/remote/systems';
 import LocalConfig from '@assets/config.json';
 import AppVersion from '@components/app_version';
+import Loading from '@components/loading';
 import {Screens, Launch, DeepLink} from '@constants';
 import useNavButtonPressed from '@hooks/navigation_button_pressed';
 import {useScreenTransitionAnimation} from '@hooks/screen_transition_animation';
@@ -28,7 +29,7 @@ import {getErrorMessage} from '@utils/errors';
 import {canReceiveNotifications} from '@utils/push_proxy';
 import {loginOptions} from '@utils/server';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
-import {getServerUrlAfterRedirect, isValidUrl, sanitizeUrl} from '@utils/url';
+import {getServerUrlAfterRedirect, getUrlDomain, isValidUrl, sanitizeUrl} from '@utils/url';
 
 import ServerForm from './form';
 import ServerHeader from './header';
@@ -59,6 +60,11 @@ const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => ({
         alignItems: 'center',
         paddingHorizontal: 20,
         marginTop: 24,
+    },
+    loadingContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1,
     },
     flex: {
         flex: 1,
@@ -100,6 +106,7 @@ const Server = ({
     const {formatMessage} = intl;
     const disableServerUrl = Boolean(managedConfig?.allowOtherServers === 'false' && managedConfig?.serverUrl);
     const additionalServer = launchType === Launch.AddServerFromDeepLink || launchType === Launch.AddServer;
+    const shouldAutoConnect = !additionalServer && (managedConfig?.allowOtherServers === 'false' || LocalConfig.AutoSelectServerUrl) && Boolean(defaultServerUrl || managedConfig?.serverUrl || LocalConfig.DefaultServerUrl);
 
     const dismiss = () => {
         NetworkManager.invalidateClient(url);
@@ -137,13 +144,17 @@ const Server = ({
             setUrl(serverUrl);
         }
 
+        if (!serverName && serverUrl && autoconnect) {
+            serverName = getUrlDomain(serverUrl);
+        }
+
         if (serverName) {
             setDisplayName(serverName);
         }
 
         if (serverUrl && serverName && autoconnect) {
             // If no other servers are allowed or the local config for AutoSelectServerUrl is set, attempt to connect
-            handleConnect(managedConfig?.serverUrl || LocalConfig.DefaultServerUrl);
+            handleConnect(serverUrl);
         }
 
         // We only want to handle connect when a smaller set of variables change
@@ -195,7 +206,7 @@ const Server = ({
 
     useNavButtonPressed(closeButtonId || '', componentId, dismiss, []);
 
-    const displayLogin = (serverUrl: string, config: ClientConfig, license: ClientLicense) => {
+    const displayLogin = (serverUrl: string, config: ClientConfig, license: ClientLicense, serverDisplayName = displayName) => {
         const {enabledSSOs, hasLoginForm, numberSSOs, ssoOptions} = loginOptions(config, license);
         const passProps = {
             config,
@@ -204,11 +215,12 @@ const Server = ({
             launchError,
             launchType,
             license,
-            serverDisplayName: displayName,
+            serverDisplayName,
             serverPreauthSecret: preauthSecret.trim() || undefined,
             serverUrl,
             ssoOptions,
             theme,
+            hideTopBar: true,
         };
 
         const redirectSSO = !hasLoginForm && numberSSOs === 1;
@@ -224,7 +236,14 @@ const Server = ({
             passProps.launchType = Launch.Normal;
         }
 
-        goToScreen(screen, '', passProps, loginAnimationOptions());
+        const options = loginAnimationOptions();
+        if (screen === Screens.LOGIN) {
+            (options.topBar as any) = {
+                visible: false,
+                height: 0,
+            };
+        }
+        goToScreen(screen, '', passProps, options);
         setConnecting(false);
         setButtonDisabled(false);
         setUrl(serverUrl);
@@ -402,7 +421,13 @@ const Server = ({
             return;
         }
 
-        displayLogin(headRequest.url, data.config!, data.license!);
+        const defaultGeneratedName = getUrlDomain(headRequest.url);
+        const finalDisplayName = (displayName && displayName !== defaultGeneratedName) ? displayName : (data.config?.SiteName || defaultGeneratedName);
+        if (finalDisplayName !== displayName) {
+            setDisplayName(finalDisplayName);
+        }
+
+        displayLogin(headRequest.url, data.config!, data.license!, finalDisplayName);
     };
 
     return (
@@ -429,30 +454,41 @@ const Server = ({
                     scrollToOverflowEnabled={true}
                     style={styles.flex}
                 >
-                    <ServerHeader
-                        additionalServer={additionalServer}
-                        theme={theme}
-                    />
-                    <ServerForm
-                        autoFocus={additionalServer}
-                        buttonDisabled={buttonDisabled}
-                        connecting={connecting}
-                        displayName={displayName}
-                        displayNameError={displayNameError}
-                        disableServerUrl={disableServerUrl}
-                        handleConnect={handleConnect}
-                        handleDisplayNameTextChanged={handleDisplayNameTextChanged}
-                        handlePreauthSecretTextChanged={handlePreauthSecretTextChanged}
-                        handleUrlTextChanged={handleUrlTextChanged}
-                        keyboardAwareRef={keyboardAwareRef}
-                        preauthSecret={preauthSecret}
-                        preauthSecretError={preauthSecretError}
-                        setShowAdvancedOptions={setShowAdvancedOptions}
-                        showAdvancedOptions={showAdvancedOptions}
-                        theme={theme}
-                        url={url}
-                        urlError={urlError}
-                    />
+                    {shouldAutoConnect ? (
+                        <Loading
+                            containerStyle={styles.loadingContainer}
+                            size='large'
+                            themeColor='centerChannelColor'
+                            testID='server.screen.autoconnect.loading'
+                        />
+                    ) : (
+                        <>
+                            <ServerHeader
+                                additionalServer={additionalServer}
+                                theme={theme}
+                            />
+                            <ServerForm
+                                autoFocus={additionalServer}
+                                buttonDisabled={buttonDisabled}
+                                connecting={connecting}
+                                displayName={displayName}
+                                displayNameError={displayNameError}
+                                disableServerUrl={disableServerUrl}
+                                handleConnect={handleConnect}
+                                handleDisplayNameTextChanged={handleDisplayNameTextChanged}
+                                handlePreauthSecretTextChanged={handlePreauthSecretTextChanged}
+                                handleUrlTextChanged={handleUrlTextChanged}
+                                keyboardAwareRef={keyboardAwareRef}
+                                preauthSecret={preauthSecret}
+                                preauthSecretError={preauthSecretError}
+                                setShowAdvancedOptions={setShowAdvancedOptions}
+                                showAdvancedOptions={showAdvancedOptions}
+                                theme={theme}
+                                url={url}
+                                urlError={urlError}
+                            />
+                        </>
+                    )}
                     <View style={styles.appVersionContainer}>
                         <AppVersion
                             textStyle={styles.appInfo}
