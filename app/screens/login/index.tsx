@@ -3,7 +3,7 @@
 
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {Platform, Text, useWindowDimensions, View, type LayoutChangeEvent} from 'react-native';
+import {BackHandler, Platform, Text, useWindowDimensions, View, type LayoutChangeEvent} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Navigation} from 'react-native-navigation';
 import Animated from 'react-native-reanimated';
@@ -157,9 +157,14 @@ const LoginOptions = ({
         dismissModal({componentId});
     };
 
-    const pop = useCallback(() => {
+    const onAndroidBack = useCallback(() => {
+        if (hideTopBar) {
+            BackHandler.exitApp();
+            return;
+        }
+
         popTopScreen(componentId);
-    }, [componentId]);
+    }, [componentId, hideTopBar]);
 
     const onLayout = useCallback((e: LayoutChangeEvent) => {
         const {height} = e.nativeEvent.layout;
@@ -180,7 +185,7 @@ const LoginOptions = ({
     const animatedStyles = useScreenTransitionAnimation(Screens.LOGIN);
 
     useNavButtonPressed(closeButtonId || '', componentId, dismiss, []);
-    useAndroidHardwareBackHandler(componentId, pop);
+    useAndroidHardwareBackHandler(componentId, onAndroidBack);
 
     let additionalContainerStyle;
     if (!contentFillScreen && (numberSSOs < 3 || !hasLoginForm || (isTablet && dimensions.height > dimensions.width))) {

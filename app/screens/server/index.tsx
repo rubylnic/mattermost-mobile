@@ -101,6 +101,7 @@ const Server = ({
     const disableServerUrl = Boolean(managedConfig?.allowOtherServers === 'false' && managedConfig?.serverUrl);
     const additionalServer = launchType === Launch.AddServerFromDeepLink || launchType === Launch.AddServer;
     const shouldAutoConnect = !additionalServer && (managedConfig?.allowOtherServers === 'false' || LocalConfig.AutoSelectServerUrl);
+    const [hideServerScreen, setHideServerScreen] = useState(shouldAutoConnect);
 
     const dismiss = () => {
         NetworkManager.invalidateClient(url);
@@ -144,7 +145,10 @@ const Server = ({
 
         if (serverUrl && serverName && autoconnect) {
             // If no other servers are allowed or the local config for AutoSelectServerUrl is set, attempt to connect
+            setHideServerScreen(true);
             handleConnect(managedConfig?.serverUrl || LocalConfig.DefaultServerUrl);
+        } else {
+            setHideServerScreen(false);
         }
 
         // We only want to handle connect when a smaller set of variables change
@@ -196,7 +200,7 @@ const Server = ({
 
     useNavButtonPressed(closeButtonId || '', componentId, dismiss, []);
 
-    const displayLogin = (serverUrl: string, config: ClientConfig, license: ClientLicense) => {
+    const displayLogin = async (serverUrl: string, config: ClientConfig, license: ClientLicense) => {
         const {enabledSSOs, hasLoginForm, numberSSOs, ssoOptions} = loginOptions(config, license);
         const passProps = {
             config,
@@ -225,18 +229,42 @@ const Server = ({
             passProps.launchType = Launch.Normal;
         }
 
-        goToScreen(
-            screen,
-            '',
-            {...passProps, hideTopBar: true},
-            {
-                ...loginAnimationOptions(),
-                topBar: {
-                    visible: false,
-                    height: 0,
-                },
+        const navOptions = {
+            ...loginAnimationOptions(),
+            popGesture: false,
+            topBar: {
+                visible: false,
+                height: 0,
             },
-        );
+        };
+
+        // When autoconnecting, replace the whole root so back/gesture can't return to SERVER.
+        // (componentId here is the screen id, not the stack id, so setStackRoot is unreliable.)
+        if (shouldAutoConnect) {
+            try {
+                await Navigation.setRoot({
+                    root: {
+                        stack: {
+                            children: [{
+                                component: {
+                                    id: screen,
+                                    name: screen,
+                                    passProps: {...passProps, hideTopBar: true},
+                                    options: navOptions,
+                                },
+                            }],
+                        },
+                    },
+                });
+            } catch {
+                // If we can't reset root for any reason, fall back to showing the server form.
+                setHideServerScreen(false);
+                goToScreen(screen, '', {...passProps, hideTopBar: true}, navOptions);
+            }
+        } else {
+            goToScreen(screen, '', {...passProps, hideTopBar: true}, navOptions);
+        }
+
         setConnecting(false);
         setButtonDisabled(false);
         setUrl(serverUrl);
@@ -255,10 +283,12 @@ const Server = ({
         const serverUrl = typeof manualUrl === 'string' ? manualUrl : url;
         if (!serverUrl || serverUrl.trim() === '') {
             setUrlError(formatMessage(defaultServerUrlMessage));
+            setHideServerScreen(false);
             return;
         }
 
         if (!isServerUrlValid(serverUrl)) {
+            setHideServerScreen(false);
             return;
         }
 
@@ -279,6 +309,7 @@ const Server = ({
                 defaultMessage: 'You are using this name for another server.',
             }));
             setConnecting(false);
+            setHideServerScreen(false);
             return;
         }
 
@@ -338,6 +369,7 @@ const Server = ({
                 setUrlError(getErrorMessage(headRequest.error, intl));
                 setButtonDisabled(true);
                 setConnecting(false);
+                setHideServerScreen(false);
             }
             return;
         }
@@ -364,6 +396,7 @@ const Server = ({
             }
             setButtonDisabled(true);
             setConnecting(false);
+            setHideServerScreen(false);
             return;
         }
 
@@ -373,6 +406,7 @@ const Server = ({
             setButtonDisabled(true);
             setUrlError(getErrorMessage(data.error, intl));
             setConnecting(false);
+            setHideServerScreen(false);
             return;
         }
 
@@ -382,6 +416,7 @@ const Server = ({
                 defaultMessage: 'A DiagnosticId value is missing for this server. Contact your system admin to review this value and restart the server.',
             }));
             setConnecting(false);
+            setHideServerScreen(false);
             return;
         }
 
@@ -389,6 +424,7 @@ const Server = ({
             const isJailbroken = await SecurityManager.isDeviceJailbroken(headRequest.url, data.config.SiteName);
             if (isJailbroken) {
                 setConnecting(false);
+                setHideServerScreen(false);
                 return;
             }
         }
@@ -397,6 +433,7 @@ const Server = ({
             const biometricsResult = await SecurityManager.authenticateWithBiometrics(headRequest.url, data.config.SiteName);
             if (!biometricsResult) {
                 setConnecting(false);
+                setHideServerScreen(false);
                 return;
             }
         }
@@ -411,13 +448,14 @@ const Server = ({
                 id: 'mobile.server_identifier.exists',
                 defaultMessage: 'You are already connected to this server.',
             }));
+            setHideServerScreen(false);
             return;
         }
 
-        displayLogin(headRequest.url, data.config!, data.license!);
+        await displayLogin(headRequest.url, data.config!, data.license!);
     };
 
-    if (shouldAutoConnect) {
+    if (hideServerScreen) {
         return (
             <View
                 style={styles.flex}

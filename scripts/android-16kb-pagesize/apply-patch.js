@@ -76,9 +76,30 @@ function applyDiffChanges(diffPath, dryRun) {
     try {
         log('   Applying all changes (including file renames)...', 'cyan');
 
-        // Use patch command instead of git apply for better compatibility
-        // patch is more forgiving with context matching
-        exec(`patch -p1 < ${diffPath}`, {silent: true});
+        // Use patch command instead of git apply for better compatibility.
+        // IMPORTANT: Always run non-interactively. Without --batch, patch may prompt for input
+        // (e.g. "Reversed patch detected?") and hang CI/local builds while stdout is suppressed.
+        //
+        // - --batch: never ask questions (fail instead)
+        // - --forward: ignore patches that seem already applied (still returns non-zero in some cases)
+        // - --silent: reduce noise (we capture output anyway)
+        const forwardDryRun = exec(`patch --batch --forward --silent --dry-run -p1 < ${diffPath}`, {silent: true, ignoreError: true});
+        if (forwardDryRun !== null) {
+            exec(`patch --batch --forward --silent -p1 < ${diffPath}`, {silent: true});
+            log('   ✓ All changes applied successfully', 'green');
+            log('   ✓ Patch files renamed automatically', 'green');
+            return;
+        }
+
+        // If forward dry-run fails, check if the patch is already applied.
+        const reverseDryRun = exec(`patch --batch --silent --dry-run -R -p1 < ${diffPath}`, {silent: true, ignoreError: true});
+        if (reverseDryRun !== null) {
+            log('   ✓ Patch already applied, skipping', 'green');
+            return;
+        }
+
+        // Otherwise, surface the failure. Re-run without silent to include error output.
+        exec(`patch --batch -p1 < ${diffPath}`, {silent: false});
 
         log('   ✓ All changes applied successfully', 'green');
         log('   ✓ Patch files renamed automatically', 'green');

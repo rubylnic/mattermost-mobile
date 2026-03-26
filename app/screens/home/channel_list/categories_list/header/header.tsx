@@ -121,7 +121,7 @@ const ChannelListHeader = ({
     const serverUrl = useServerUrl();
     useEffect(() => {
         marginLeft.value = iconPad ? 50 : 0;
-    }, [iconPad]);
+    }, [iconPad, marginLeft]);
 
     const onPress = usePreventDoubleTap(useCallback(() => {
         const renderContent = () => {
@@ -194,14 +194,6 @@ const ChannelListHeader = ({
                         </TouchableWithoutFeedback>
                     </View>
                     <View style={styles.subHeadingView}>
-                        <Text
-                            numberOfLines={1}
-                            ellipsizeMode='tail'
-                            style={styles.subHeadingStyles}
-                            testID='channel_list_header.server_display_name'
-                        >
-                            {serverDisplayName}
-                        </Text>
                         {pushProxyStatus !== PUSH_PROXY_STATUS_VERIFIED && (
                             <TouchableWithFeedback
                                 onPress={onPushAlertPress}
