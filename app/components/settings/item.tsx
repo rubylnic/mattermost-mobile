@@ -3,8 +3,6 @@
 
 import React from 'react';
 import {useIntl} from 'react-intl';
-import {Platform} from 'react-native';
-
 import OptionItem, {type OptionItemProps} from '@components/option_item';
 
 import Options, {DisplayOptionConfig, NotificationsOptionConfig, SettingOptionConfig} from '../../screens/settings/config';
@@ -37,7 +35,7 @@ const SettingItem = ({
                 icon={config.icon}
                 info={info}
                 label={label}
-                type={Platform.select({ios: 'arrow', default: 'default'})}
+                type={'arrow'}
                 {...props}
             />
             {separator && <SettingSeparator/>}
