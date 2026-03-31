@@ -90,6 +90,7 @@ const FloatingTextInput = forwardRef<FloatingTextInputRef, FloatingTextInputProp
     const focusedLabel = Boolean(focused || Boolean(value) || placeholder);
     const inputRef = useRef<TextInput>(null);
     const styles = getStyleSheet(theme);
+    const isDarkTheme = theme.type === 'Onyx' || theme.type === 'Indigo';
 
     useImperativeHandle(ref, () => ({
         blur: () => inputRef.current?.blur(),
@@ -115,13 +116,17 @@ const FloatingTextInput = forwardRef<FloatingTextInputRef, FloatingTextInputProp
     const combinedTextInputStyle = useMemo(() => {
         const res: StyleProp<TextStyle> = [styles.input];
 
+        if (!editable) {
+            res.push({color: isDarkTheme ? theme.centerChannelColor : '#B7B9B5'});
+        }
+
         if (multiline) {
             const height = multilineInputHeight ? multilineInputHeight - 20 : 80;
             res.push({height, textAlignVertical: 'top'});
         }
 
         return res;
-    }, [styles, multiline, multilineInputHeight]);
+    }, [styles, editable, multiline, multilineInputHeight, isDarkTheme, theme.centerChannelColor]);
 
     const focus = useCallback(() => {
         inputRef.current?.focus();

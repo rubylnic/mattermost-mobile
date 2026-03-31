@@ -21,9 +21,9 @@ const styles = StyleSheet.create({
         marginHorizontal: 24,
     },
     close: {
-        flex: 1,
         alignItems: 'flex-end',
         marginLeft: 11,
+        flexShrink: 0,
     },
     descriptionContainer: {
         marginBottom: 24,
@@ -37,10 +37,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         marginTop: 22,
+        justifyContent: 'space-between',
     },
     title: {
         color: Preferences.THEMES.denim.centerChannelColor,
         ...typography('Body', 200, 'SemiBold'),
+    },
+    titleText: {
+        flexGrow: 1,
+        flexShrink: 1,
     },
 });
 
@@ -51,7 +56,7 @@ const SkinSelectorTooltip = ({onClose}: Props) => {
                 <FormattedText
                     id='skintone_selector.tooltip.title'
                     defaultMessage='Choose your default skin tone'
-                    style={styles.title}
+                    style={[styles.title, styles.titleText]}
                     testID='skin_selector.tooltip.title'
                 />
                 <TouchableOpacity

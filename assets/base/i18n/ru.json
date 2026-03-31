@@ -1208,5 +1208,11 @@
   "video.download": "Скачать видео",
   "video.download_description": "Для воспроизведения этого видео необходимо загрузить его.",
   "video.failed_description": "Возникла ошибка при воспроизведении видео.",
-  "your.servers": "Ваши серверы"
+  "your.servers": "Ваши серверы",
+  "mobile.file_attachment.title": "Файлы и медиа",
+  "mobile.file_upload.browse": "Прикрепить файл",
+  "mobile.file_upload.camera_photo": "Сделать фото",
+  "mobile.file_upload.camera_video": "Снять видео",
+  "mobile.file_upload.library": "Выбрать из фотогалереи",
+  "mobile.edit_profile.remove_profile_photo" : "Удалить фото"
 }

@@ -62,7 +62,13 @@ type DisplayProps = {
 const Display = ({componentId, currentUser, hasMilitaryTimeFormat, isCRTEnabled, isCRTSwitchEnabled, isThemeSwitchingEnabled}: DisplayProps) => {
     const intl = useIntl();
     const theme = useTheme();
-    const timezone = useMemo(() => getUserTimezoneProps(currentUser), [currentUser?.timezone]);
+    const timezone = useMemo(() => getUserTimezoneProps(currentUser), [currentUser]);
+    const themeLabel = useMemo(() => {
+        if (theme.type?.toLowerCase() === 'denim') {
+            return intl.formatMessage({id: 'theme.denim.emerald', defaultMessage: 'Emerald'});
+        }
+        return theme.type || '';
+    }, [intl, theme.type]);
 
     const goToThemeSettings = usePreventDoubleTap(useCallback(() => {
         const screen = Screens.SETTINGS_DISPLAY_THEME;
@@ -100,7 +106,7 @@ const Display = ({componentId, currentUser, hasMilitaryTimeFormat, isCRTEnabled,
                 <SettingItem
                     optionName='theme'
                     onPress={goToThemeSettings}
-                    info={theme.type!}
+                    info={themeLabel}
                     testID='display_settings.theme.option'
                 />
             )}

@@ -62,8 +62,6 @@ const NavigationHeaderLargeTitle = ({
             </Text>
             {!hasSearch && Boolean(subtitle) &&
             <Text
-                ellipsizeMode='tail'
-                numberOfLines={1}
                 style={styles.subHeading}
                 testID='navigation.large_header.subtitle'
             >

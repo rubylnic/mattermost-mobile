@@ -2,6 +2,7 @@
 // See LICENSE.txt for license information.
 
 import React, {useCallback, useMemo} from 'react';
+import {useIntl} from 'react-intl';
 import {Text, TouchableOpacity, useWindowDimensions, View} from 'react-native';
 
 import CompassIcon from '@components/compass_icon';
@@ -123,6 +124,7 @@ type ThemeTilesProps = {
 }
 export const ThemeTiles = ({allowedThemeKeys, onThemeChange, selectedTheme}: ThemeTilesProps) => {
     const theme = useTheme();
+    const intl = useIntl();
 
     const styles = getStyleSheet(theme);
     const visibleThemeKeys = useMemo(() => allowedThemeKeys.filter((k) => k !== 'sapphire'), [allowedThemeKeys]);
@@ -134,12 +136,13 @@ export const ThemeTiles = ({allowedThemeKeys, onThemeChange, selectedTheme}: The
                         return null;
                     }
 
+                    const themeLabel = themeKey === 'denim' ? intl.formatMessage({id: 'theme.denim.emerald', defaultMessage: 'Emerald'}) : themeKey;
                     return (
                         <ThemeTile
                             key={themeKey}
                             label={(
                                 <Text style={styles.label}>
-                                    {themeKey}
+                                    {themeLabel}
                                 </Text>
                             )}
                             action={onThemeChange}

@@ -23,6 +23,8 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         paddingHorizontal: 15,
     };
 
+    const isDarkTheme = theme.type === 'Onyx' || theme.type === 'Indigo';
+
     return {
         inputContainer: {
             borderTopWidth: 1,
@@ -42,7 +44,10 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             height: 125,
         },
         disabled: {
-            backgroundColor: changeOpacity(theme.centerChannelColor, 0.1),
+            backgroundColor: isDarkTheme ? changeOpacity(theme.centerChannelColor, 0.1) : 'transparent',
+        },
+        disabledText: {
+            color: isDarkTheme ? theme.centerChannelColor : '#B7B9B5',
         },
     };
 });
@@ -85,7 +90,10 @@ function TextSetting({
     const style = getStyleSheet(theme);
 
     const inputContainerStyle = useMemo(() => (disabled ? [style.inputContainer, style.disabled] : style.inputContainer), [style, disabled]);
-    const inputStyle = useMemo(() => (multiline ? style.multiline : style.input), [multiline]);
+    const inputStyle = useMemo(() => {
+        const base = multiline ? style.multiline : style.input;
+        return disabled ? [base, style.disabledText] : base;
+    }, [disabled, multiline, style.disabledText, style.input, style.multiline]);
 
     const actualKeyboardType: KeyboardTypeOptions = keyboardType === 'url' ? Platform.select({android: 'default', default: 'url'}) : keyboardType;
 

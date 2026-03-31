@@ -72,6 +72,7 @@ const ProfileImagePicker = ({
     const canRemovePicture = hasPictureUrl(user, serverUrl);
     const styles = getStyleSheet(theme);
     const isTablet = useIsTablet();
+    const bottomSheetTitle = intl.formatMessage({id: 'user.edit_profile.profile_photo.change_photo', defaultMessage: 'Change profile photo'});
 
     const showFileAttachmentOptions = usePreventDoubleTap(useCallback(() => {
         const renderContent = () => {
@@ -113,10 +114,10 @@ const ProfileImagePicker = ({
             closeButtonId: 'close-edit-profile',
             renderContent,
             snapPoints: [1, snapPoint],
-            title: 'Change profile photo',
+            title: bottomSheetTitle,
             theme,
         });
-    }, [canRemovePicture, isTablet, onRemoveProfileImage, pictureUtils, styles.title, theme]));
+    }, [bottomSheetTitle, canRemovePicture, isTablet, onRemoveProfileImage, pictureUtils, styles.title, theme]));
 
     return (
         <TouchableOpacity

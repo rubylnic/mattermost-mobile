@@ -28,7 +28,6 @@ import {getLabelPositions} from './utils';
 
 const BORDER_DEFAULT_WIDTH = 1;
 const BORDER_FOCUSED_WIDTH = 2;
-
 const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => ({
     container: {
         width: '100%',
@@ -70,7 +69,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => ({
         ...typography('Body', 25),
     },
     readOnly: {
-        backgroundColor: changeOpacity(theme.centerChannelColor, 0.16),
+        backgroundColor: (theme.type === 'Onyx' || theme.type === 'Indigo') ? changeOpacity(theme.centerChannelColor, 0.16) : 'transparent',
     },
     textInput: {
         flexDirection: 'row',
