@@ -85,8 +85,6 @@ export default function ChannelListRow({
         purposeComponent = (
             <Text
                 style={style.purpose}
-                ellipsizeMode='tail'
-                numberOfLines={1}
             >
                 {channel.purpose}
             </Text>

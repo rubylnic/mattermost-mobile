@@ -66,7 +66,6 @@ const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => ({
         lineHeight: 12,
         marginBottom: 8,
         marginTop: 2,
-        height: 13,
     },
     titleContainer: {
         alignItems: Platform.select({android: 'flex-start', ios: 'center'}),
@@ -217,8 +216,6 @@ const Header = ({
                     <View style={styles.centered}>
                         {!hasSearch &&
                         <Animated.Text
-                            ellipsizeMode='tail'
-                            numberOfLines={1}
                             style={[styles.title, opacity]}
                             testID='navigation.header.title'
                         >
@@ -228,8 +225,6 @@ const Header = ({
                         {!isLargeTitle && Boolean(subtitle || subtitleCompanion) &&
                         <View style={styles.subtitleContainer}>
                             <Text
-                                ellipsizeMode='tail'
-                                numberOfLines={1}
                                 style={styles.subtitle}
                                 testID='navigation.header.subtitle'
                             >

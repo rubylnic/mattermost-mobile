@@ -5,7 +5,6 @@ import {type StyleProp, Text, type TextStyle, View} from 'react-native';
 
 import {useTheme} from '@context/theme';
 import {useIsTablet} from '@hooks/device';
-import {nonBreakingString} from '@utils/strings';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
 import {typography} from '@utils/typography';
 
@@ -55,18 +54,15 @@ export const ChannelBody = ({
     const theme = useTheme();
     const styles = getStyleSheet(theme);
     const isTablet = useIsTablet();
-    const nonBreakingDisplayName = nonBreakingString(displayName);
     const channelText = (
         <Text
-            ellipsizeMode='tail'
-            numberOfLines={1}
             style={[textStyles, styles.flex]}
             testID={`${testId}.display_name`}
         >
-            {nonBreakingDisplayName}
+            {displayName}
             {Boolean(channelName) && (
                 <Text style={styles.channelName}>
-                    {nonBreakingString(` ~${channelName}`)}
+                    {` ~${channelName}`}
                 </Text>
             )}
         </Text>
@@ -75,24 +71,20 @@ export const ChannelBody = ({
     if (teamDisplayName) {
         const teamText = (
             <Text
-                ellipsizeMode={isTablet ? undefined : 'tail'} // Handled by the parent text on tablets
-                numberOfLines={isTablet ? undefined : 1} // Handled by the parent text on tablets
                 style={[styles.teamName, isMuted && styles.teamNameMuted, styles.flex]}
                 testID={`${testId}.team_display_name`}
             >
-                {nonBreakingString(`${isTablet ? ' ' : ''}${teamDisplayName}`)}
+                {`${isTablet ? ' ' : ''}${teamDisplayName}`}
             </Text>
         );
 
         if (isTablet) {
             return (
                 <Text
-                    ellipsizeMode='tail'
-                    numberOfLines={1}
                     style={[textStyles, styles.flex]}
                     testID={`${testId}.display_name`}
                 >
-                    {nonBreakingDisplayName}
+                    {displayName}
                     {teamText}
                 </Text>
             );

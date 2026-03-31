@@ -300,8 +300,6 @@ const ChannelHeader = ({
                     }
                     <View style={styles.customStatusText}>
                         <Text
-                            numberOfLines={1}
-                            ellipsizeMode='tail'
                             style={styles.subtitle}
                             testID='channel_header.custom_status.custom_status_text'
                         >

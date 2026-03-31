@@ -11,6 +11,7 @@ import {useTheme} from '@context/theme';
 import {popTopScreen} from '@screens/navigation';
 import NavigationStore from '@store/navigation_store';
 import {renderWithIntl} from '@test/intl-test-helper';
+import {advanceTimers, disableFakeTimers, enableFakeTimers} from '@test/timer_helpers';
 
 import DisplayTheme from './display_theme';
 
@@ -46,8 +47,7 @@ describe('DisplayTheme', () => {
         expect(screen.getByTestId('theme_display_settings.denim.option')).toBeTruthy();
         expect(screen.getByTestId('theme_display_settings.denim.option.selected')).toBeTruthy();
 
-        expect(screen.getByTestId('theme_display_settings.sapphire.option')).toBeTruthy();
-        expect(screen.queryByTestId('theme_display_settings.sapphire.option.selected')).toBeFalsy();
+        expect(screen.queryByTestId('theme_display_settings.sapphire.option')).toBeFalsy();
     });
 
     it('should render with custom theme, current theme is custom', () => {
@@ -173,22 +173,8 @@ describe('DisplayTheme', () => {
             />,
         );
 
-        const sapphireTile = screen.getByTestId('theme_display_settings.sapphire.option');
-
-        fireEvent.press(sapphireTile);
-
-        jest.mocked(useTheme).mockImplementation(() => ({...Preferences.THEMES.sapphire, type: 'Sapphire'}));
-
-        screen.rerender(
-            <DisplayTheme
-                allowedThemeKeys={['denim', 'sapphire']}
-                {...displayThemeOtherProps}
-            />,
-        );
-
-        await waitFor(() => {
-            expect(screen.getByTestId('theme_display_settings.sapphire.option.selected')).toBeTruthy();
-        });
+        const denimTile = screen.getByTestId('theme_display_settings.denim.option');
+        fireEvent.press(denimTile);
 
         expect(popTopScreen).toHaveBeenCalledTimes(0);
     });
@@ -211,22 +197,16 @@ describe('DisplayTheme', () => {
     });
 
     it('should allow user to select two different themes using normal interaction', async () => {
-        jest.useFakeTimers();
-
-        const numOfSavePreferenceCalls = 2;
+        enableFakeTimers();
         renderWithIntl(
             <DisplayTheme
-                allowedThemeKeys={['denim', 'sapphire']}
+                allowedThemeKeys={['denim', 'quartz']}
                 {...displayThemeOtherProps}
             />,
         );
 
-        const sapphireTile = screen.getByTestId('theme_display_settings.sapphire.option');
-
-        fireEvent.press(sapphireTile);
-
-        jest.advanceTimersByTime(750);
-        jest.useRealTimers();
+        const quartzTile = screen.getByTestId('theme_display_settings.quartz.option');
+        fireEvent.press(quartzTile);
 
         await waitFor(() => {
             expect(savePreference).toHaveBeenCalledWith(
@@ -234,57 +214,50 @@ describe('DisplayTheme', () => {
                 expect.arrayContaining([
                     expect.objectContaining({
                         category: 'theme',
-                        value: expect.stringContaining('"type":"Sapphire"'),
+                        value: expect.stringContaining('"type":"Quartz"'),
                     }),
                 ]),
             );
-            expect(savePreference).toHaveBeenCalledTimes(1);
         });
 
-        jest.useFakeTimers();
-        jest.advanceTimersByTime(750);
+        await advanceTimers(750);
 
         const denimTile = screen.getByTestId('theme_display_settings.denim.option');
-
         fireEvent.press(denimTile);
 
-        // firing denimTile will not cause the savePreference to be called again since we have the prevent double tap
-        expect(savePreference).toHaveBeenCalledTimes(numOfSavePreferenceCalls);
-
-        jest.useRealTimers();
+        await waitFor(() => {
+            expect(savePreference).toHaveBeenCalledWith(
+                expect.any(String),
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        category: 'theme',
+                        value: expect.stringContaining('"type":"Denim"'),
+                    }),
+                ]),
+            );
+            expect(savePreference).toHaveBeenCalledTimes(2);
+        });
+        disableFakeTimers();
     });
 
     it('should not allow user to select a theme rapidly', async () => {
+        enableFakeTimers();
         const numOfSavePreferenceCalls = 1;
         renderWithIntl(
             <DisplayTheme
-                allowedThemeKeys={['denim', 'sapphire']}
+                allowedThemeKeys={['denim', 'quartz']}
                 {...displayThemeOtherProps}
             />,
         );
 
-        const sapphireTile = screen.getByTestId('theme_display_settings.sapphire.option');
-
-        fireEvent.press(sapphireTile);
-
-        await waitFor(() => {
-            expect(savePreference).toHaveBeenCalledWith(
-                expect.any(String),
-                expect.arrayContaining([
-                    expect.objectContaining({
-                        category: 'theme',
-                        value: expect.stringContaining('"type":"Sapphire"'),
-                    }),
-                ]),
-            );
-            expect(savePreference).toHaveBeenCalledTimes(numOfSavePreferenceCalls);
-        });
-
-        const denimTile = screen.getByTestId('theme_display_settings.denim.option');
-
-        fireEvent.press(denimTile);
+        const quartzTile = screen.getByTestId('theme_display_settings.quartz.option');
+        fireEvent.press(quartzTile);
+        fireEvent.press(quartzTile);
 
         // firing denimTile will not cause the savePreference to be called again since we have the prevent double tap
-        expect(savePreference).toHaveBeenCalledTimes(numOfSavePreferenceCalls);
+        await waitFor(() => {
+            expect(savePreference).toHaveBeenCalledTimes(numOfSavePreferenceCalls);
+        });
+        disableFakeTimers();
     });
 });

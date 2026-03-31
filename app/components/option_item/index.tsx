@@ -315,7 +315,6 @@ const OptionItem = ({
                     <Text
                         style={labelTextStyle}
                         testID={`${testID}.label`}
-                        numberOfLines={1}
                     >
                         {label}
                     </Text>

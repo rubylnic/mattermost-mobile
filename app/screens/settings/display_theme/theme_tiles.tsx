@@ -125,10 +125,11 @@ export const ThemeTiles = ({allowedThemeKeys, onThemeChange, selectedTheme}: The
     const theme = useTheme();
 
     const styles = getStyleSheet(theme);
+    const visibleThemeKeys = useMemo(() => allowedThemeKeys.filter((k) => k !== 'sapphire'), [allowedThemeKeys]);
     return (
         <View style={styles.tilesContainer}>
             {
-                allowedThemeKeys.map((themeKey: ThemeKey) => {
+                visibleThemeKeys.map((themeKey: ThemeKey) => {
                     if (!Preferences.THEMES[themeKey] || !selectedTheme) {
                         return null;
                     }

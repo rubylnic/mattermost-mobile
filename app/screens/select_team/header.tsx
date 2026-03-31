@@ -58,7 +58,6 @@ function Header() {
         <Text
             style={styles.displayNameText}
             testID='select_team.server_display_name'
-            numberOfLines={1}
         >
             {serverDisplayName}
         </Text>

@@ -183,8 +183,6 @@ const ChannelListHeader = ({
                         >
                             <View style={styles.headerRow}>
                                 <Text
-                                    numberOfLines={2}
-                                    ellipsizeMode='tail'
                                     style={styles.headingStyles}
                                     testID='channel_list_header.team_display_name'
                                 >
@@ -230,8 +228,6 @@ const ChannelListHeader = ({
             <View style={styles.noTeamHeaderRow}>
                 <View style={[styles.noTeamHeaderRow, {flex: 1}]}>
                     <Text
-                        numberOfLines={1}
-                        ellipsizeMode='tail'
                         style={styles.noTeamHeadingStyles}
                         testID='channel_list_header.team_display_name'
                     >

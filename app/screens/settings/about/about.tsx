@@ -98,7 +98,6 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             flexDirection: 'row',
         },
         copyInfoButtonContainer: {
-            width: 120,
             marginTop: 10,
             position: 'relative',
         },
