@@ -29,7 +29,7 @@
                         <constraints>
                             <constraint firstItem="o2q-4f-QhC" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="bottom" id="4Ey-7v-4Dg"/>
                             <constraint firstItem="zb7-2j-YSv" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="OEP-e6-f2h"/>
-                            <constraint firstItem="zb7-2j-YSv" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="ZaJ-sa-38B"/>
+                            <constraint firstItem="zb7-2j-YSv" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-80" id="ZaJ-sa-38B"/>
                             <constraint firstItem="zb7-2j-YSv" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.51" id="WID-0.51-splashIcon"/>
                             <constraint firstItem="zb7-2j-YSv" firstAttribute="height" secondItem="zb7-2j-YSv" secondAttribute="width" id="HGT-eqW-splashIcon"/>
                             <constraint firstItem="o2q-4f-QhC" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="c16-o0-T1a"/>

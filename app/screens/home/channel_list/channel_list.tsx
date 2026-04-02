@@ -21,7 +21,6 @@ import PerformanceMetricsManager from '@managers/performance_metrics_manager';
 import {resetToTeams, openToS} from '@screens/navigation';
 import NavigationStore from '@store/navigation_store';
 import {isMainActivity} from '@utils/helpers';
-import {tryRunAppReview} from '@utils/reviews';
 import {addSentryContext} from '@utils/sentry';
 
 import AdditionalTabletView from './additional_tablet_view';
@@ -64,7 +63,6 @@ let backPressTimeout: NodeJS.Timeout|undefined;
 // run. Most of the normal users won't see this issue, but on edge times
 // (near the time you will see the rate dialog) will show when switching
 // servers.
-let hasRendered = false;
 
 const ChannelListScreen = (props: ChannelProps) => {
     const theme = useTheme();
@@ -159,17 +157,6 @@ const ChannelListScreen = (props: ChannelProps) => {
     // - We only need to re-run when the current user state changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.currentUserId, props.hasCurrentUser]);
-
-    // Init the rate app. Only run the effect on the first render if ToS is not open
-    useEffect(() => {
-        if (hasRendered) {
-            return;
-        }
-        hasRendered = true;
-        if (!NavigationStore.isToSOpen()) {
-            tryRunAppReview(props.launchType, props.coldStart);
-        }
-    }, [props.launchType, props.coldStart]);
 
     useEffect(() => {
         PerformanceMetricsManager.finishLoad('HOME', serverUrl);

@@ -27,7 +27,6 @@ import {typography} from '@utils/typography';
 import {getLabelPositions} from './utils';
 
 const BORDER_DEFAULT_WIDTH = 1;
-const BORDER_FOCUSED_WIDTH = 2;
 const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => ({
     container: {
         width: '100%',
@@ -138,9 +137,9 @@ const FloatingInputContainer = ({
             res.push(styles.readOnly);
         }
         res.push({
-            borderWidth: focusedLabel ? BORDER_FOCUSED_WIDTH : BORDER_DEFAULT_WIDTH,
+            borderWidth: BORDER_DEFAULT_WIDTH,
         });
-        const height = defaultHeight + ((focusedLabel ? BORDER_FOCUSED_WIDTH : BORDER_DEFAULT_WIDTH) * 2);
+        const height = defaultHeight + (BORDER_DEFAULT_WIDTH * 2);
         if (canGrow) {
             res.push({
                 minHeight: height,
@@ -162,7 +161,7 @@ const FloatingInputContainer = ({
         }
 
         return res;
-    }, [styles.textInput, styles.readOnly, editable, focusedLabel, defaultHeight, canGrow, focused, shouldShowError, wrapChildren, theme.buttonBg, theme.errorTextColor]);
+    }, [styles.textInput, styles.readOnly, editable, defaultHeight, canGrow, focused, shouldShowError, wrapChildren, theme.buttonBg, theme.errorTextColor]);
 
     const textAnimatedTextStyle = useAnimatedStyle(() => {
         const inputText = hasValue;
