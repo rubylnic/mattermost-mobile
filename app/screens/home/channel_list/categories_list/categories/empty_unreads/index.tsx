@@ -38,6 +38,9 @@ const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => ({
         color: changeOpacity(theme.sidebarText, 0.72),
         ...typography('Body', 200),
     },
+    showAllButtonText: {
+        color: theme.type === 'Quartz' ? theme.buttonBg : theme.buttonColor,
+    },
 }));
 
 function EmptyUnreads() {
@@ -73,6 +76,7 @@ function EmptyUnreads() {
                     onPress={onPress}
                     emphasis='tertiary'
                     isInverted={true}
+                    textStyle={styles.showAllButtonText}
                 />
             </View>
         </View>

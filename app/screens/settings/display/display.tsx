@@ -120,6 +120,7 @@ const Display = ({componentId, currentUser, hasMilitaryTimeFormat, isCRTEnabled,
                 optionName='timezone'
                 onPress={goToTimezoneSettings}
                 info={intl.formatMessage(timezone.useAutomaticTimezone ? TIMEZONE_FORMAT[0] : TIMEZONE_FORMAT[1])}
+                separator={isCRTSwitchEnabled}
                 testID='display_settings.timezone.option'
             />
             {isCRTSwitchEnabled && (
@@ -127,6 +128,7 @@ const Display = ({componentId, currentUser, hasMilitaryTimeFormat, isCRTEnabled,
                     optionName='crt'
                     onPress={goToCRTSettings}
                     info={intl.formatMessage(isCRTEnabled ? CRT_FORMAT[0] : CRT_FORMAT[1])}
+                    separator={false}
                     testID='display_settings.crt.option'
                 />
             )}

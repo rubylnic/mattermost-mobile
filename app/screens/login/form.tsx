@@ -216,22 +216,12 @@ const LoginForm = ({
             loginPlaceholders.push(formatMessage({id: 'login.email', defaultMessage: 'Email'}));
         }
 
-        if (usernameEnabled) {
-            loginPlaceholders.push(formatMessage({id: 'login.username', defaultMessage: 'Username'}));
-        }
-
         if (ldapEnabled) {
             if (config.LdapLoginFieldName) {
                 loginPlaceholders.push(config.LdapLoginFieldName);
             } else {
                 loginPlaceholders.push(formatMessage({id: 'login.ldapUsername', defaultMessage: 'AD/LDAP Username'}));
             }
-        }
-
-        if (loginPlaceholders.length >= 2) {
-            return loginPlaceholders.slice(0, loginPlaceholders.length - 1).join(', ') +
-                ` ${formatMessage({id: 'login.or', defaultMessage: 'or'})} ` +
-                loginPlaceholders[loginPlaceholders.length - 1];
         }
 
         if (loginPlaceholders.length === 1) {

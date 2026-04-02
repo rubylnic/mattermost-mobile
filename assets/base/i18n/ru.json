@@ -366,6 +366,7 @@
   "general_settings.about": "О {appTitle}",
   "general_settings.advanced_settings": "Расширенные настройки",
   "general_settings.display": "Вид",
+  "general_settings.download_logs": "Скачать логи приложения",
   "general_settings.help": "Помощь",
   "general_settings.notifications": "Уведомления",
   "general_settings.report_problem": "Сообщить о проблеме",
@@ -992,7 +993,7 @@
   "screen.channel_files.results.filter.title": "Фильтр по типу файлов",
   "screen.mentions.subtitle": "Сообщения, в которых вы были упомянуты",
   "screen.mentions.title": "Недавние упоминания",
-  "screen.saved_messages.subtitle": "Все сообщения, которые вы сохранили для последующих действий",
+  "screen.saved_messages.subtitle": "Все сообщения, которые вы сохранили",
   "screen.saved_messages.title": "Сохраненные сообщения",
   "screen.search.header.files": "Файлы",
   "screen.search.header.messages": "Сообщения",
@@ -1214,5 +1215,6 @@
   "mobile.file_upload.camera_photo": "Сделать фото",
   "mobile.file_upload.camera_video": "Снять видео",
   "mobile.file_upload.library": "Выбрать из фотогалереи",
-  "mobile.edit_profile.remove_profile_photo" : "Удалить фото"
+  "mobile.edit_profile.remove_profile_photo" : "Удалить фото",
+  "report_problem.download_logs.title": "Скачать логи приложения"
 }
