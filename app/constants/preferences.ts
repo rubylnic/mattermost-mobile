@@ -135,7 +135,7 @@ const Preferences = {
             centerChannelBg: '#ffffff',
             centerChannelColor: '#3f4350',
             newMessageSeparator: '#15b7b7',
-            linkColor: '#24A600',
+            linkColor: '#006800',
             buttonBg: '#24A600',
             buttonColor: '#ffffff',
             errorTextColor: '#d24b4e',

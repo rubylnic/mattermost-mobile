@@ -13,6 +13,7 @@ import {useExternalLink} from '@hooks/use_external_link';
 import {isMinimumServerVersion} from '@utils/helpers';
 import {logError} from '@utils/log';
 import {tryOpenURL} from '@utils/url';
+import {typography} from '@utils/typography';
 
 const TIME_TO_IDLE = 3000;
 
@@ -30,6 +31,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         marginVertical: 16,
+    },
+    title: {
+        ...typography('Heading', 300, 'SemiBold'),
     },
 });
 
@@ -129,6 +133,7 @@ const SendTestNotificationNotice = ({
                     defaultMessage: 'Not receiving notifications? Start by sending a test notification to all your devices to check if they’re working as expected. If issues persist, explore ways to solve them with troubleshooting steps.',
                 })}
                 title={intl.formatMessage({id: 'user_settings.notifications.test_notification.title', defaultMessage: 'Troubleshooting notifications'})}
+                titleTextStyle={styles.title}
                 primaryButton={primaryButton}
                 secondaryButton={secondaryButton}
                 type='hint'

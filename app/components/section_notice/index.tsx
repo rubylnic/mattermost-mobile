@@ -13,23 +13,11 @@ import CompassIcon from '../compass_icon';
 import Markdown from '../markdown';
 
 import SectionNoticeButton from './section_notice_button';
+import type {SectionNoticeProps} from './types';
 
-import type {AvailableScreens} from '@typings/screens/navigation';
-
-type Props = {
-    title: string;
-    text?: string;
-    primaryButton?: SectionNoticeButtonProps;
-    secondaryButton?: SectionNoticeButtonProps;
-    linkButton?: SectionNoticeButtonProps;
-    type?: 'info' | 'success' | 'danger' | 'welcome' | 'warning' | 'hint';
-    isDismissable?: boolean;
-    onDismissClick?: () => void;
-    location: AvailableScreens;
-    tags?: string[];
-    testID?: string;
-    squareCorners?: boolean;
-}
+type Props = SectionNoticeProps & {
+    titleTextStyle?: React.ComponentProps<typeof Text>['style'];
+};
 
 const iconByType = {
     info: 'information-outline',
@@ -136,7 +124,7 @@ const getStyleFromTheme = makeStyleSheetFromTheme((theme) => {
         },
         hintContainer: {
             borderColor: changeOpacity(theme.sidebarTextActiveBorder, 0.16),
-            backgroundColor: changeOpacity(theme.sidebarTextActiveBorder, 0.08),
+            backgroundColor: (theme.type === 'Denim' || theme.type === 'Quartz') ? '#FFFFFF' : changeOpacity(theme.sidebarTextActiveBorder, 0.08),
         },
         dismissIcon: {
             position: 'absolute',
@@ -158,6 +146,7 @@ const getStyleFromTheme = makeStyleSheetFromTheme((theme) => {
 
 const SectionNotice = ({
     title,
+    titleTextStyle,
     isDismissable,
     linkButton,
     onDismissClick,
@@ -199,7 +188,7 @@ const SectionNotice = ({
                     />
                 )}
                 <View style={styles.body}>
-                    <Text style={styles.title}>{title}</Text>
+                    <Text style={[styles.title, titleTextStyle]}>{title}</Text>
                     {text && (
                         <Markdown
                             theme={theme}

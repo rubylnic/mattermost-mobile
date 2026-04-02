@@ -21,11 +21,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                             </imageView>
                             <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SplashIcon" translatesAutoresizingMaskIntoConstraints="NO" id="zb7-2j-YSv">
-                                <rect key="frame" x="147" y="374" width="96" height="96"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="96" id="C0c-tw-sZ9"/>
-                                    <constraint firstAttribute="width" constant="96" id="DrF-wH-Lnj"/>
-                                </constraints>
+                                <rect key="frame" x="95" y="322" width="200" height="200"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
@@ -34,6 +30,8 @@
                             <constraint firstItem="o2q-4f-QhC" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="bottom" id="4Ey-7v-4Dg"/>
                             <constraint firstItem="zb7-2j-YSv" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="OEP-e6-f2h"/>
                             <constraint firstItem="zb7-2j-YSv" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="ZaJ-sa-38B"/>
+                            <constraint firstItem="zb7-2j-YSv" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.51" id="WID-0.51-splashIcon"/>
+                            <constraint firstItem="zb7-2j-YSv" firstAttribute="height" secondItem="zb7-2j-YSv" secondAttribute="width" id="HGT-eqW-splashIcon"/>
                             <constraint firstItem="o2q-4f-QhC" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="c16-o0-T1a"/>
                             <constraint firstItem="o2q-4f-QhC" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="pQY-0J-gtp"/>
                             <constraint firstItem="o2q-4f-QhC" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="q9q-06-Jnv"/>

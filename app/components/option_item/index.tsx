@@ -57,6 +57,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => {
             minHeight: ITEM_HEIGHT,
             gap: 12,
             justifyContent: 'space-between',
+            paddingVertical: 8,
         },
         destructive: {
             color: theme.dndIndicator,
