@@ -12,8 +12,8 @@ import {useServerUrl} from '@context/server';
 import {useExternalLink} from '@hooks/use_external_link';
 import {isMinimumServerVersion} from '@utils/helpers';
 import {logError} from '@utils/log';
-import {tryOpenURL} from '@utils/url';
 import {typography} from '@utils/typography';
+import {tryOpenURL} from '@utils/url';
 
 const TIME_TO_IDLE = 3000;
 

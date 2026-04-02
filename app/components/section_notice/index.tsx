@@ -13,6 +13,7 @@ import CompassIcon from '../compass_icon';
 import Markdown from '../markdown';
 
 import SectionNoticeButton from './section_notice_button';
+
 import type {SectionNoticeProps} from './types';
 
 type Props = SectionNoticeProps & {

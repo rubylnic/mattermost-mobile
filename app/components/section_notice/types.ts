@@ -1,9 +1,8 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import type {StyleProp, TextStyle} from 'react-native';
-
 import type {AvailableScreens} from '@typings/screens/navigation';
+import type {StyleProp, TextStyle} from 'react-native';
 
 export type SectionNoticeButtonProps = {
     onClick: () => void;
